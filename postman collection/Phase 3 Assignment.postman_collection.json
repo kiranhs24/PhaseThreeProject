@@ -1,0 +1,137 @@
+{
+	"info": {
+		"_postman_id": "0e5eceb8-391d-49f6-938f-a2b644b82214",
+		"name": "Phase 3 Assignment",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "GET List of Users",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Validate Status Code\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"pm.test(\"Validate Page Number\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.page).to.eql(parseInt(pm.environment.get(\"PageNumber\")));\r",
+							"});\r",
+							"pm.test(\"Validate response data\", function() {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.response.to.have.jsonBody(\"page\");\r",
+							"    pm.response.to.have.jsonBody(\"per_page\");\r",
+							"    pm.response.to.have.jsonBody(\"total\");\r",
+							"    pm.response.to.have.jsonBody(\"total_pages\");\r",
+							"    for(var i=0; i<jsonData.data.length;i++) {\r",
+							"        pm.response.to.have.jsonBody(\"data[\"+i+\"].id\");\r",
+							"        pm.response.to.have.jsonBody(\"data[\"+i+\"].email\");\r",
+							"        pm.response.to.have.jsonBody(\"data[\"+i+\"].first_name\");\r",
+							"        pm.response.to.have.jsonBody(\"data[\"+i+\"].last_name\");\r",
+							"    }\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{Protocol}}://{{Domain}}{{Path}}?page={{PageNumber}}",
+					"protocol": "{{Protocol}}",
+					"host": [
+						"{{Domain}}{{Path}}"
+					],
+					"query": [
+						{
+							"key": "page",
+							"value": "{{PageNumber}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "POST New User",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Validate Status Code\", function () {\r",
+							"    pm.response.to.have.status(201);\r",
+							"});\r",
+							"pm.test(\"Validate json body\", function() {\r",
+							"    pm.response.to.have.jsonBody(\"name\");\r",
+							"    pm.response.to.have.jsonBody(\"job\");\r",
+							"    pm.response.to.have.jsonBody(\"id\");\r",
+							"});\r",
+							"pm.test(\"Validate the data created\", function() {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.name).to.eql(pm.environment.get(\"Name\"));\r",
+							"    pm.expect(jsonData.job).to.eql(pm.environment.get(\"Job\"));\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\": \"{{Name}}\",\r\n    \"job\": \"{{Job}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{Protocol}}://{{Domain}}{{Path}}",
+					"protocol": "{{Protocol}}",
+					"host": [
+						"{{Domain}}{{Path}}"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "Protocol",
+			"value": "https"
+		},
+		{
+			"key": "Domain",
+			"value": "reqres.in"
+		}
+	]
+}
